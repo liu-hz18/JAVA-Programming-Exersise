@@ -1,0 +1,178 @@
+JAVA：作业2
+
+刘泓尊  2018011446  计84  liu-hz18@mails.tsinghua.edu.cn
+
+------
+
+第一题：基础知识
+
+按照题目要求编写代码即可。`javap -p Man`的输出结果为：
+
+```
+Compiled from "Man.java"
+class Man extends BasePerson implements Person {
+  private final java.lang.String name;
+  private final java.lang.String description;
+  protected int count;
+  Man(java.lang.String, java.lang.String);
+  protected void move();
+  public java.lang.String getName();
+  public java.lang.String getDescription();
+  public int changeSomething();
+}
+```
+
+`javap -p SuperMan` 的输出结果为
+
+```
+Compiled from "Man.java"
+class SuperMan extends Man {
+  SuperMan(java.lang.String, java.lang.String);
+  SuperMan();
+  void fly();
+  protected void move();
+  public int changeSomething();
+}
+```
+
+##### 1.3
+
+对于`man`可调用的方法，测试代码为
+
+```java
+Man man = new Man("man","nothing");
+System.out.println(man.getName());
+System.out.println(man.getDescription());
+System.out.println(man.changeSomething());
+man.move(); //method1
+```
+
+运行结果为：
+
+```
+man
+nothing
+-1
+I'm moving...
+```
+
+对于superman可调用的方法，测试代码为
+
+```java
+SuperMan superman = new SuperMan("superman","nothing");
+System.out.println(superman.getName());  //Man
+System.out.println(superman.getDescription()); //method2
+System.out.println(superman.changeSomething()); //SuperMan
+superman.move();
+superman.fly(); //method3, Superman
+```
+
+运行结果为：
+
+```
+superman
+nothing
+1
+I'm flying...
+Fly! SuperMan!
+```
+
+对于pman能调用的方法，测试代码为：
+
+```java
+Person pman = new Man("pman","nothing");
+System.out.println(pman.getName()); //Man
+System.out.println(pman.getDescription());
+System.out.println(pman.changeSomething());
+// pman.move(); //error
+```
+
+运行结果为
+
+```
+pman
+nothing
+-1
+```
+
+对于psman能调用的方法，测试代码为
+
+```java
+Person psman = new SuperMan("psman","nothing");
+System.out.println(psman.getName());  //Man
+System.out.println(psman.getDescription());
+System.out.println(psman.changeSomething()); //method4, Person
+// psman.move(); //error
+// psman.fly();  //error
+```
+
+运行结果为
+
+```
+psman
+nothing
+1
+```
+
+对于msman可调用的方法，测试代码为：
+
+```java
+Man msman = new SuperMan("msman","nothing");
+System.out.println(msman.getName()); //Man
+System.out.println(msman.getDescription());
+System.out.println(msman.changeSomething()); //method5
+msman.move(); //Man, SuperMan
+// msMan.fly(); //error
+```
+
+运行结果为
+
+```
+msman
+nothing
+1
+I'm flying...
+```
+
+所以，对象实例调用的方法，声明要在此方法中出现，而运行时执行的方法定义则是由引用在内存中的实际类型决定的。
+
+##### 1.4
+
+（1）错误，父类实例不可转换为子类。
+
+（2）可行
+
+（3）错误，父类实例不可转换为子类。
+
+------
+
+第二题：单例模式
+
+单例模式要求：
+
+	1. 单例类只能有一个实例，因此要声明为static
+ 	2. 单例类必须给所有其他对象创建自己的唯一实例，因此构造函数应为私有，防止外部类实例化
+ 	3. 单例类必须给所有其他对象提供这一实例，因此要设计公有静态方法，返回这一实例。
+
+此外，可以设计为Instance被装载时便实例化。这样可以保证线程安全，java的classloader机制避免了多线程的同步问题。但是不能实现懒惰加载。
+
+```java
+class Singleton extends BaseSingleton {
+    private static Singleton mInstance = new Singleton();
+    private Singleton() {}
+    public static Singleton getInstance() {
+        return mInstance;
+    }
+}
+```
+
+------
+
+第三题：考勤记录
+
+设计了Student类和Teacher类 派生BaseStaff基类。
+
+其中Student类的方法如下：
+
+
+
